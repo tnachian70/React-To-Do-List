@@ -1,0 +1,88 @@
+import * as React from "https://cdn.skypack.dev/react@17.0.1";
+import * as ReactDOM from "https://cdn.skypack.dev/react-dom@17.0.1";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    
+    // initialize state
+    this.state = {
+      userInput: '',
+      list: []
+    }
+    
+    // bind events
+    this.handleChange = this.handleChange.bind(this)
+    this.addItem = this.addItem.bind(this)
+  }
+  
+  handleChange() {
+    this.setState({
+      userInput: event.target.value
+    });
+  }
+  
+  addItem() {
+    // if user input isnt empty
+    if(this.state.userInput !== '' ) {
+      const userInputObj = {
+        // add a random id which is used to delete
+        id: Math.random(),
+        // property to store the user input
+        value: this.state.userInput
+      };
+      // update list
+      const list = [...this.state.list];
+      list.push(userInputObj);
+
+      // reset userInput
+      this.setState ({
+        userInput: '', 
+        list: list
+      });
+    };
+  }
+    
+  removeItem(key) {
+     const list = [...this.state.list];
+     // keep the elements whose id doesn't match the deleted item's key
+     const updatedList = list.filter(item => item.id !== key);
+     // update list in state
+     this.setState({
+       list: updatedList
+     });
+   }
+  
+  render () {
+    return ( 
+      <div class='container'>
+        <h2 class='item header'>TO DO LIST</h2>
+        <input  
+          class = 'item input'
+          placeholder = 'add item...'
+          value = {this.state.userInput}
+          onChange = {this.handleChange}
+        />
+        <button onClick = {this.addItem} class='item button'>ADD</button>
+        <br />
+        <div class='list-container'>
+        {/* map over and print list items */}
+        {this.state.list.map(listItem => 
+         <div class='list-item'>
+           {listItem.value}
+           {/*give each list item an x button*/}                   
+           <button class="xbutton"                                                    onClick={() => this.removeItem(listItem.id)}>x</button>
+          </div>)
+        }
+        </div>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+
+// this.removeItem(listItem.id) goes in the xbutton onClick
